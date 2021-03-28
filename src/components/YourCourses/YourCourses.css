@@ -1,0 +1,41 @@
+.main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.title {
+    margin-top: 50px;
+}
+
+.table {
+    max-width: 75%;
+    max-height: 70%;
+    opacity: 0.9;
+    font-size: 15px;
+}
+
+.course-row:hover {
+    font-size: 25px;
+}
+
+.course-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: space-around;
+}
+
+.drop-btn {
+    color: red;
+    font-weight: 600;
+    left: 5px;
+}
+
+.credits-count {
+    font-weight: 600;
+    font-size: 20px;
+    margin-top: 20px;
+}

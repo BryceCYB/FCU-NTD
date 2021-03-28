@@ -1,0 +1,47 @@
+.search-bar {
+    width: 30%;
+    min-width: 300px;
+    height: 50px;
+    color: black;
+    background-image: linear-gradient(to left, #cacacad0 0%, rgb(255, 255, 255) 100%);
+    margin-top: 3rem;
+    border-radius: 2rem;
+    font-size: 1.5rem;
+    padding: 20px;
+    opacity: 0.7;
+}
+
+.search-bar:focus {
+    opacity: 1;
+    width: 36%;
+    height: 52px;
+    outline: none;
+}
+
+::-webkit-input-placeholder {
+    color: rgb(83, 83, 83);
+}
+
+::-moz-placeholder {
+    color: rgb(83, 83, 83);
+}
+
+:-ms-input-placeholder {
+    color: rgb(83, 83, 83);
+}
+
+:-moz-placeholder {
+    color: rgb(83, 83, 83);
+}
+
+@media screen and (min-width: 425px) {
+    .search-bar {
+        min-width: 240px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .search-bar {
+        min-width: 280px;
+    }
+}

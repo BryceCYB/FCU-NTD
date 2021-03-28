@@ -1,0 +1,42 @@
+.main-panel {
+    background-image: linear-gradient(to top, #4e4e4e33 0%, #9b9b9b8a 100%);
+    margin: 0;
+    height: 100vh;
+    backdrop-filter: blur(0.2rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.account-btn {
+    position: absolute;
+    top: 2.5rem;
+    left: 3.5rem;
+    height: 60px;
+    text-align: center;
+    justify-content: center;
+}
+
+.account-img {
+    height: 80%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.account-img:hover {
+    height: 88%;
+}
+
+@media screen and (max-width: 768px) {
+    .account-btn {
+        left: 3rem;
+        height: 50px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .account-btn {
+        top: 2rem;
+        left: 1rem;
+        height: 40px;
+    }
+}

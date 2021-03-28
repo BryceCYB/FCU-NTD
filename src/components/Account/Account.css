@@ -1,0 +1,107 @@
+.login-panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    min-width: 360px;
+    min-height: 365px;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.158);
+}
+
+.reset-panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 30%;
+    min-width: 360px;
+    min-height: 300px;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.158);
+    transform: translate(-50%, -50%);
+}
+
+.info-panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    min-width: 360px;
+    min-height: 650px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.158);
+}
+
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.card {
+    background: transparent;
+}
+
+.forgot-btn {
+    margin-top: 15px;
+}
+
+.forgot-link {
+    color: white;
+}
+
+.logout-btn {
+    width: 60%;
+    max-width: 320px;
+    margin-bottom: 12px;
+}
+
+.details {
+    width: 85%;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: space-around;
+}
+
+.success-msg {
+    font-weight: 600;
+    background: rgb(52, 145, 52);
+}
+
+.error-msg {
+    font-weight: 600;
+    background: rgb(214, 65, 65);
+}
+
+.info-row {
+    margin-bottom: 12px;
+}
+
+.info-title {
+    margin-top: 8px;
+}
+
+@media screen and (max-width: 425px) {
+    .info-panel {
+        margin-top: 60px;
+    }
+    h5 {
+        font-size: 15;
+    }
+}

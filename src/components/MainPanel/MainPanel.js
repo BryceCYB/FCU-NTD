@@ -1,0 +1,67 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import './MainPanel.css';
+import HamburgerMenu from '../NavMenu/HamburgerMenu';
+import About from '../About/About'
+import AllCourses from '../AllCourses/AllCourses';
+import YourCourses from '../YourCourses/YourCourses';
+import Account from '../Account/Account';
+import ResetPassword from '../Account/ResetPassword';
+import Term from '../Term/Term';
+import accountIcon from '../../images/account_icon.png';
+import { useAuth } from '../../contexts/AuthContext';
+import firebase from '../../firebase';
+
+const MainPanel =(() => {
+    const { currentUser } = useAuth();
+    const [user, setUser] = useState({});    
+    
+    useEffect(() => {
+        if (currentUser) {
+            firebase.database().ref("Users/Students")
+            .orderByChild("email")
+            .equalTo(currentUser.email)
+            .once("value", snapshot => {
+                if (!snapshot.exists()) {
+                    console.log("No users found");
+                } else {
+                    let emialSubString = currentUser.email.substring(0, 8);
+                    let user = snapshot.child(emialSubString).val();
+                    setUser(user);
+                }
+            });
+        }
+    }, [currentUser]);
+
+    return (
+        <Router>
+            <Switch>
+                <div className="main-panel">
+                    <Link className="account-btn" to="/account">
+                        <img className="account-img" src={currentUser ? user.avatar :accountIcon} alt="Account" />
+                        <p className="user-name">{currentUser ? user.name : "Login"}</p>
+                    </Link>
+                    <HamburgerMenu/>
+                    
+                    <Route path="/" exact component={About} />
+                    <Route
+                        path='/allcourses'
+                        render={(props) => (<AllCourses {...props} user={user} />)}
+                    />
+                    <Route
+                        path='/yourcourses'
+                        render={(props) => (<YourCourses {...props} user={user} />)}
+                    />
+                    <Route
+                        path='/account'
+                        render={(props) => (<Account {...props} user={user} />)}
+                    />
+                    <Route path="/term" component={Term} />
+                    <Route path="/reset-password" component={ResetPassword} />
+                </div>
+            </Switch>
+        </Router>
+    );
+})
+
+export default MainPanel;
