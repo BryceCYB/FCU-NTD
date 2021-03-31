@@ -3,7 +3,7 @@ import './AllCourses.css';
 import firebase from '../../firebase';
 
 const CourseList = ({courseList, user}) => {
-    const [courses, setCourses] = useState(courseList);
+    const [courses, setCourses] = useState([]);
 
     useEffect(() => {
         setCourses(courseList);
@@ -17,16 +17,16 @@ const CourseList = ({courseList, user}) => {
         let intEndTime = parseInt(endTime);
 
         for (let i = intStartTime; i < intEndTime; i++) {
-            firebase.database().ref("Users/Students/" + user.id + "/schedule/" + date).update({[i]: course.id});
+            firebase.database().ref("Users/Students/" + user.id + "/schedule/" + date).update({[i]: course});
         }
-
-        firebase.database().ref("Users/Students/" + user.id + "/enrolled/").update({[course.name]: course.id});
+        firebase.database().ref("Users/Students/" + user.id).update({credits: user.credits += course.credit});
+        firebase.database().ref("Users/Students/" + user.id + "/enrolled").update({[course.id]: course.id});
+        firebase.database().ref("Courses/" + course.id).update({vacancy: course.vacancy -= 1});
         removeCourse(course);
     }
 
     const removeCourse = (course) => {
-        const index = courseList.indexOf(course);
-        
+        const index = courses.indexOf(course);
         if (index > -1) {
             setCourses(courseList.splice(index, 1));
         }
@@ -34,7 +34,7 @@ const CourseList = ({courseList, user}) => {
     
     return (
         <>
-            { courseList.map((course, index) => {
+            { courses.map((course, index) => {
                 if (course) {
                     return (
                         <tr className="courses-row" key={index}>

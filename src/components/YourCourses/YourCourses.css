@@ -15,11 +15,11 @@
     max-width: 75%;
     max-height: 70%;
     opacity: 0.9;
-    font-size: 15px;
+    margin-top: 3%;
 }
 
 .course-row:hover {
-    font-size: 25px;
+    font-size: 18px;
 }
 
 .course-cell {
@@ -37,5 +37,20 @@
 .credits-count {
     font-weight: 600;
     font-size: 20px;
-    margin-top: 20px;
+}
+
+.loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.classroom-txt {
+    margin-top: 8px;
+}
+
+.schedule-body {
+    color: red;
+    line-height: 0%;
 }

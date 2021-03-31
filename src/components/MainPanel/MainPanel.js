@@ -37,27 +37,27 @@ const MainPanel =(() => {
         <Router>
             <Switch>
                 <div className="main-panel">
-                    <Link className="account-btn" to="/account">
+                    <Link className="account-btn" to="/fcu/account">
                         <img className="account-img" src={currentUser ? user.avatar :accountIcon} alt="Account" />
                         <p className="user-name">{currentUser ? user.name : "Login"}</p>
                     </Link>
                     <HamburgerMenu/>
                     
-                    <Route path="/" exact component={About} />
+                    <Route path="/fcu/" exact component={About} />
                     <Route
-                        path='/allcourses'
+                        path="/fcu/allcourses"
                         render={(props) => (<AllCourses {...props} user={user} />)}
                     />
                     <Route
-                        path='/yourcourses'
+                        path="/fcu/yourcourses"
                         render={(props) => (<YourCourses {...props} user={user} />)}
                     />
                     <Route
-                        path='/account'
+                        path="/fcu/account"
                         render={(props) => (<Account {...props} user={user} />)}
                     />
-                    <Route path="/term" component={Term} />
-                    <Route path="/reset-password" component={ResetPassword} />
+                    <Route path="/fcu/term" component={Term} />
+                    <Route path="/fcu/reset-password" component={ResetPassword} />
                 </div>
             </Switch>
         </Router>

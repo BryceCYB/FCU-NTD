@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './Account.css';
 import { Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../../contexts/AuthContext';
+import { useHistory } from "react-router-dom";
 
 export default function Info(props) {
     const { logout } = useAuth();
     const [user, setUser] = useState({});
     const [error, setError] = useState('');
+    let history = useHistory();
 
     useEffect(() => {
         setUser(props.user);
@@ -17,7 +19,8 @@ export default function Info(props) {
 
         try {
             await logout();
-            window.location.reload();
+            // window.location.reload();
+            history.push("/fcu/");
         } catch {
             setError("Failed to logout!");
         }
