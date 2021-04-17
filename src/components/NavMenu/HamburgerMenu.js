@@ -154,12 +154,12 @@ function HamburgerMenu() {
           </li>
           <li>
             <ItemLink onClick={handleClick} to="/fcu/allcourses">
-              All Courses
+              Courses
             </ItemLink>
           </li>
           <li>
             <ItemLink onClick={handleClick} to="/fcu/yourcourses">
-              Your Courses
+              Schedule
             </ItemLink>
           </li>
           <li>

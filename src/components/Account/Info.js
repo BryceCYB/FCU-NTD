@@ -8,7 +8,7 @@ export default function Info(props) {
     const { logout } = useAuth();
     const [user, setUser] = useState({});
     const [error, setError] = useState('');
-    let history = useHistory();
+    const history = useHistory();
 
     useEffect(() => {
         setUser(props.user);
@@ -24,6 +24,10 @@ export default function Info(props) {
         } catch {
             setError("Failed to logout!");
         }
+    }
+
+    function handleEdit() {
+        history.push("/fcu/edit-info");
     }
 
     return (
@@ -43,6 +47,7 @@ export default function Info(props) {
                 <h5 className="info-row">Address: {user.address}</h5>
                 <h5 className="info-row">Bio: {user.bio}</h5>
             </div>
+            <Button className="logout-btn btn-info mt-4" varient="link" onClick={handleEdit}>Edit info</Button>
             <Button className="logout-btn btn-warning" varient="link" onClick={handleLogout}>Logout</Button>
         </div>
     )

@@ -7,6 +7,7 @@ import AllCourses from '../AllCourses/AllCourses';
 import YourCourses from '../YourCourses/YourCourses';
 import Account from '../Account/Account';
 import ResetPassword from '../Account/ResetPassword';
+import EditInfo from '../Account/EditInfo';
 import Term from '../Term/Term';
 import accountIcon from '../../images/account_icon.png';
 import { useAuth } from '../../contexts/AuthContext';
@@ -55,6 +56,10 @@ const MainPanel =(() => {
                     <Route
                         path="/fcu/account"
                         render={(props) => (<Account {...props} user={user} />)}
+                    />
+                    <Route
+                        path="/fcu/edit-info"
+                        render={(props) => (<EditInfo {...props} user={user} />)}
                     />
                     <Route path="/fcu/term" component={Term} />
                     <Route path="/fcu/reset-password" component={ResetPassword} />
