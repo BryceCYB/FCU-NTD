@@ -32,7 +32,65 @@ export default function YourCourses(props) {
         } else {
             setError("⚠ Please login first.");
         }
-    }, [currentUser, props.user.credits, props.user.schedule, schedule]);
+    }, [currentUser, props.user.credits]);
+
+    const handleDrop = (btnId) => {
+        let targetDate = btnId.substring(0, 3);
+        let targetTime = btnId.charAt(3);
+        let courseCredit;
+        let courseId;
+        
+        switch (targetDate) {
+            case "mon":
+                courseId = schedule.mon[targetTime].id;
+                courseCredit = schedule.mon[targetTime].credit;
+                break;
+            case "tue":
+                courseId = schedule.tue[targetTime].id;
+                courseCredit = schedule.tue[targetTime].credit;
+                break;
+            case "wed":
+                courseId = schedule.wed[targetTime].id;
+                courseCredit = schedule.wed[targetTime].credit;
+                break;
+            case "thu":
+                courseId = schedule.thu[targetTime].id;
+                courseCredit = schedule.thu[targetTime].credit;
+                break;
+            case "fri":
+                courseId = schedule.fri[targetTime].id;
+                courseCredit = schedule.fri[targetTime].credit;
+                break;
+            case "sat":
+                courseId = schedule.sat[targetTime].id;
+                courseCredit = schedule.sat[targetTime].credit;
+                break;
+            case "sun":
+                courseId = schedule.sun[targetTime].id;
+                courseCredit = schedule.sun[targetTime].credit;
+                break;
+            default:
+                // courseId = "0000";
+                courseCredit = 2;
+        }
+
+        let courseList = props.courses;
+        let targetCourse = courseList.find(course => course.id === courseId);
+        let emptyCourse = courseList.find(course => course.id === "0000");
+
+        // Clear cell with empty class
+        let startTime = getStartTime(targetCourse.start);
+        let endTime = getEndTime(targetCourse.end);
+        let intStartTime = parseInt(startTime);
+        let intEndTime = parseInt(endTime);
+
+        for (let i = intStartTime; i < intEndTime; i++) {
+            firebase.database().ref("Users/Students/" + props.user.id + "/schedule/" + targetDate).update({[i]: emptyCourse});
+        }
+
+        firebase.database().ref("Users/Students/" + props.user.id).update({credits: props.user.credits -= courseCredit});
+        firebase.database().ref("Courses/" + targetCourse.id).update({vacancy: targetCourse.vacancy += 1});
+    }
 
     if (!currentUser) {
         return (
@@ -48,6 +106,78 @@ export default function YourCourses(props) {
                 <h2>Loading...</h2>
             </div>
         );
+    }
+
+    function renderTableCell(index) {
+        return (
+            <tr>
+                <td>{timeSlots[index]}</td>
+                <td>
+                    <h6>
+                        {schedule.mon[index].name === '-' ? ' ' : schedule.mon[index].name}
+                    </h6>
+                    <p className="classroom-txt">
+                        {schedule.mon[index].classroom === '-' ? ' ' : schedule.mon[index].classroom}
+                    </p>
+                    {schedule.mon[index].name === '-' ? ' ' : <button className="drop-btn" id = {"mon" + index} onClick={e => handleDrop(e.target.id)}>X</button>}
+                </td>
+                <td>
+                    <h6>
+                        {schedule.tue[index].name === '-' ? ' ' : schedule.tue[index].name}
+                        
+                    </h6>
+                    <p className="classroom-txt">
+                        {schedule.tue[index].classroom === '-' ? ' ' : schedule.tue[index].classroom}
+                    </p>
+                    {schedule.tue[index].name === '-' ? ' ' : <button className="drop-btn" id = {"tue" + index} onClick={e => handleDrop(e.target.id)}>X</button>}
+                </td>
+                <td>
+                    <h6>
+                        {schedule.wed[index].name === '-' ? ' ' : schedule.wed[index].name}
+                    </h6>
+                    <p className="classroom-txt">
+                        {schedule.wed[index].classroom === '-' ? ' ' : schedule.wed[index].classroom}
+                    </p>
+                    {schedule.wed[index].name === '-' ? ' ' : <button className="drop-btn" id = {"wed" + index} onClick={e => handleDrop(e.target.id)}>X</button>}
+                </td>
+                <td>
+                    <h6>
+                        {schedule.thu[index].name === '-' ? ' ' : schedule.thu[index].name}
+                    </h6>
+                    <p className="classroom-txt">
+                        {schedule.thu[index].classroom === '-' ? ' ' : schedule.thu[index].classroom}
+                    </p>
+                    {schedule.thu[index].name === '-' ? ' ' : <button className="drop-btn" id = {"thu" + index} onClick={e => handleDrop(e.target.id)}>X</button>}
+                </td>
+                <td>
+                    <h6>
+                        {schedule.fri[index].name === '-' ? ' ' : schedule.fri[index].name}
+                    </h6>
+                    <p className="classroom-txt">
+                        {schedule.fri[index].classroom === '-' ? ' ' : schedule.fri[index].classroom}
+                    </p>
+                    {schedule.fri[index].name === '-' ? ' ' : <button className="drop-btn" id = {"fri" + index} onClick={e => handleDrop(e.target.id)}>X</button>}
+                </td>
+                <td>
+                    <h6>
+                        {schedule.sat[index].name === '-' ? ' ' : schedule.sat[index].name}
+                    </h6>
+                    <p className="classroom-txt">
+                        {schedule.sat[index].classroom === '-' ? ' ' : schedule.sat[index].classroom}
+                    </p>
+                    {schedule.sat[index].name === '-' ? ' ' : <button className="drop-btn" id = {"sat" + index} onClick={e => handleDrop(e.target.id)}>X</button>}
+                </td>
+                <td>
+                    <h6>
+                        {schedule.sun[index].name === '-' ? ' ' : schedule.sun[index].name}
+                    </h6>
+                    <p className="classroom-txt">
+                        {schedule.sun[index].classroom === '-' ? ' ' : schedule.sun[index].classroom}
+                    </p>
+                    {schedule.sun[index].name === '-' ? ' ' : <button className="drop-btn" id = {"sun" + index} onClick={e => handleDrop(e.target.id)}>X</button>}
+                </td>
+            </tr>
+        )
     }
 
     return (
@@ -68,414 +198,84 @@ export default function YourCourses(props) {
                         <th>Sunday</th>
                     </tr>
                 </thead>
-                {
-                    <tbody className="schedule-body">
-                        <tr>
-                            <td>{timeSlots[0]}</td>
-                            <td>
-                                <h6>{schedule.mon[0].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[0].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[0].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[0].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[0].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[0].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[0].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[0].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[0].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[0].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[0].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[0].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[0].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[0].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[1]}</td>
-                            <td>
-                                <h6>{schedule.mon[1].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[1].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[1].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[1].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[1].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[1].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[1].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[1].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[1].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[1].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[1].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[1].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[1].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[1].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[2]}</td>
-                            <td>
-                                <h6>{schedule.mon[2].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[2].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[2].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[2].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[2].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[2].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[2].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[2].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[2].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[2].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[2].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[2].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[2].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[2].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[3]}</td>
-                            <td>
-                                <h6>{schedule.mon[3].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[3].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[3].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[3].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[3].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[3].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[3].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[3].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[3].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[3].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[3].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[3].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[3].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[3].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[4]}</td>
-                            <td>
-                                <h6>{schedule.mon[4].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[4].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[4].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[4].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[4].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[4].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[4].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[4].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[4].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[4].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[4].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[4].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[4].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[4].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[5]}</td>
-                            <td>
-                                <h6>{schedule.mon[5].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[5].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[5].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[5].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[5].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[5].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[5].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[5].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[5].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[5].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[5].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[5].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[5].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[5].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[6]}</td>
-                            <td>
-                                <h6>{schedule.mon[6].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[6].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[6].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[6].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[6].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[6].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[6].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[6].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[6].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[6].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[6].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[6].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[6].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[6].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[7]}</td>
-                            <td>
-                                <h6>{schedule.mon[7].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[7].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[7].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[7].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[7].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[7].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[7].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[7].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[7].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[7].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[7].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[7].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[7].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[7].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[8]}</td>
-                            <td>
-                                <h6>{schedule.mon[8].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[8].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[8].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[8].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[8].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[8].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[8].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[8].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[8].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[8].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[8].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[8].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[8].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[8].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[9]}</td>
-                            <td>
-                                <h6>{schedule.mon[9].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[9].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[9].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[9].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[9].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[9].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[9].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[9].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[9].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[9].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[9].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[9].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[9].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[9].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[10]}</td>
-                            <td>
-                                <h6>{schedule.mon[10].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[10].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[10].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[10].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[10].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[10].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[10].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[10].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[10].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[10].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[10].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[0].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[10].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[10].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[11]}</td>
-                            <td>
-                                <h6>{schedule.mon[11].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[11].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[11].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[11].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[11].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[11].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[11].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[11].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[11].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[11].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[11].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[11].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[11].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[11].classroom}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{timeSlots[12]}</td>
-                            <td>
-                                <h6>{schedule.mon[12].name}</h6>
-                                <p className="classroom-txt">{schedule.mon[12].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.tue[12].name}</h6>
-                                <p className="classroom-txt">{schedule.tue[12].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.wed[12].name}</h6>
-                                <p className="classroom-txt">{schedule.wed[12].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.thu[12].name}</h6>
-                                <p className="classroom-txt">{schedule.thu[12].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.fri[12].name}</h6>
-                                <p className="classroom-txt">{schedule.fri[12].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sat[12].name}</h6>
-                                <p className="classroom-txt">{schedule.sat[12].classroom}</p>
-                            </td>
-                            <td>
-                                <h6>{schedule.sun[12].name}</h6>
-                                <p className="classroom-txt">{schedule.sun[12].classroom}</p>
-                            </td>
-                        </tr>
-                    </tbody> 
-                }
+                <tbody className="schedule-body">
+                    {renderTableCell(0)}
+                    {renderTableCell(1)}
+                    {renderTableCell(2)}
+                    {renderTableCell(3)}
+                    {renderTableCell(4)}
+                    {renderTableCell(5)}
+                    {renderTableCell(6)}
+                    {renderTableCell(7)}
+                    {renderTableCell(8)}
+                    {renderTableCell(9)}
+                    {renderTableCell(10)}
+                    {renderTableCell(11)}
+                    {renderTableCell(12)}
+                </tbody> 
             </ReactBootStrap.Table>
         </div>
     )
+}
+
+function getStartTime(startTime) {
+    switch(startTime) {
+            case 810:
+                return "0";
+            case 910:
+                return "1";
+            case 1010:
+                return "2";
+            case 1110:
+                return "3";
+            case 1210:
+                return "4";
+            case 1310:
+                return "5";
+            case 1410:
+                return "6";
+            case 1510:
+                return "7";
+            case 1610:
+                return "8";
+            case 1710:
+                return "9";
+            case 1830:
+                return "10";
+            case 1925:
+                return "11";
+            default:
+                return "12";
+        }
+}
+
+function getEndTime(endTime) {
+    switch(endTime) {
+            case 900:
+                return "1";
+            case 1000:
+                return "2";
+            case 1100:
+                return "3";
+            case 1200:
+                return "4";
+            case 1300:
+                return "5";
+            case 1400:
+                return "6";
+            case 1500:
+                return "7";
+            case 1600:
+                return "8";
+            case 1700:
+                return "9";
+            case 1800:
+                return "10";
+            case 1920:
+                return "11";
+            case 2015:
+                return "12";
+            default:
+                return "13";
+        }
 }

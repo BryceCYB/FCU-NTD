@@ -15,7 +15,8 @@ import firebase from '../../firebase';
 
 const MainPanel =(() => {
     const { currentUser } = useAuth();
-    const [user, setUser] = useState({});    
+    const [user, setUser] = useState({});   
+    const [courseList, setCourseList] = useState([]); 
     
     useEffect(() => {
         if (currentUser) {
@@ -29,6 +30,16 @@ const MainPanel =(() => {
                     let emialSubString = currentUser.email.substring(0, 8);
                     let user = snapshot.child(emialSubString).val();
                     setUser(user);
+
+                    const coursesRef = firebase.database().ref("Courses");
+                    coursesRef.on("value", (snapshot) => {
+                        const courses = snapshot.val();
+                        const courseList = [];
+                        for (let id in courses) {
+                            courseList.push(courses[id]);
+                        }
+                        setCourseList(courseList);
+                    })
                 }
             });
         }
@@ -47,11 +58,11 @@ const MainPanel =(() => {
                     <Route path="/fcu/" exact component={About} />
                     <Route
                         path="/fcu/allcourses"
-                        render={(props) => (<AllCourses {...props} user={user} />)}
+                        render={(props) => (<AllCourses {...props} user={user} courses={courseList} />)}
                     />
                     <Route
                         path="/fcu/yourcourses"
-                        render={(props) => (<YourCourses {...props} user={user} />)}
+                        render={(props) => (<YourCourses {...props} user={user} courses={courseList} />)}
                     />
                     <Route
                         path="/fcu/account"

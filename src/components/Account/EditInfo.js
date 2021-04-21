@@ -31,8 +31,9 @@ export default function EditInfo(props) {
             if (userAvatar) {
                 e.preventDefault();
                 handleUpload();
-            }
+            } 
             history.push("/fcu/account");
+
         } catch {
             console.log("⚠ Failed to update!");
         }
@@ -129,7 +130,7 @@ export default function EditInfo(props) {
                     </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="uploadPhoto">
-                    <Form.File id="uploadPhoto" label="Upload new avatar" onChange={handleFileSelected}/>
+                    <Form.File id="uploadPhoto" accept=".png, .jpg" label="Upload new avatar (png, jpg)" onChange={handleFileSelected}/>
                 </Form.Group>
                 <div className="update-btn-container">
                     <Button className="update-btn btn-info text-center mt-2" varient="link" type="submit">Update</Button>

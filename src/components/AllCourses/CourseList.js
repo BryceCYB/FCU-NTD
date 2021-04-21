@@ -6,6 +6,7 @@ const CourseList = ({courseList, user}) => {
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
+        // filter Vacancy later
         setCourses(courseList);
     }, [courseList])
 
@@ -20,7 +21,6 @@ const CourseList = ({courseList, user}) => {
             firebase.database().ref("Users/Students/" + user.id + "/schedule/" + date).update({[i]: course});
         }
         firebase.database().ref("Users/Students/" + user.id).update({credits: user.credits += course.credit});
-        firebase.database().ref("Users/Students/" + user.id + "/enrolled").update({[course.id]: course.id});
         firebase.database().ref("Courses/" + course.id).update({vacancy: course.vacancy -= 1});
         removeCourse(course);
     }
