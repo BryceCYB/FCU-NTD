@@ -4,7 +4,6 @@ import SearchBar from '../SearchBar/SearchBar';
 import CourseList from './CourseList';
 import { useAuth } from '../../contexts/AuthContext';
 import * as ReactBootStrap from 'react-bootstrap';
-// import firebase from '../../firebase';
 
 export default function AllCourses(props) {
     const [input, setInput] = useState('');
@@ -29,16 +28,6 @@ export default function AllCourses(props) {
     useEffect(() => {
         if (currentUser) {
             setError("");
-            // const coursesRef = firebase.database().ref("Courses");
-            // coursesRef.on("value", (snapshot) => {
-            //     const courses = snapshot.val();
-            //     const courseList = [];
-            //     for (let id in courses) {
-            //         courseList.push(courses[id]);
-            //     }
-            //     setCourseList(courseList);
-            //     setCourseListDefault(courseList);
-            // })
             setCourseList(props.courses);
             setCourseListDefault(props.courses);
         } else {

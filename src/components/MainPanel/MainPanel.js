@@ -17,6 +17,7 @@ const MainPanel =(() => {
     const { currentUser } = useAuth();
     const [user, setUser] = useState({});   
     const [courseList, setCourseList] = useState([]); 
+    const [defaultCourseList, setDefaultCourseList] = useState([]); 
     
     useEffect(() => {
         if (currentUser) {
@@ -34,11 +35,21 @@ const MainPanel =(() => {
                     const coursesRef = firebase.database().ref("Courses");
                     coursesRef.on("value", (snapshot) => {
                         const courses = snapshot.val();
-                        const courseList = [];
-                        for (let id in courses) {
-                            courseList.push(courses[id]);
-                        }
-                        setCourseList(courseList);
+                        const list = [];
+                        const defaultList = [];
+                        const enrolledRef = firebase.database().ref("Users/Students/" + user.id + "/enrolled");
+
+                        enrolledRef.on("value", (snapshot) => {
+                            const enrolledList = snapshot.val();
+                            for (let id in courses) {
+                                if (enrolledList[id] !== id) {
+                                    list.push(courses[id]);
+                                }
+                                defaultList.push(courses[id]);
+                            }
+                            setCourseList(list); 
+                            setDefaultCourseList(defaultList);
+                        })
                     })
                 }
             });
@@ -62,7 +73,7 @@ const MainPanel =(() => {
                     />
                     <Route
                         path="/fcu/yourcourses"
-                        render={(props) => (<YourCourses {...props} user={user} courses={courseList} />)}
+                        render={(props) => (<YourCourses {...props} user={user} courses={defaultCourseList} />)}
                     />
                     <Route
                         path="/fcu/account"

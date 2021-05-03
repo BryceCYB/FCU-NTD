@@ -6,9 +6,8 @@ const CourseList = ({courseList, user}) => {
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
-        // filter Vacancy later
         setCourses(courseList);
-    }, [courseList])
+    }, [courseList, user.enrolled])
 
     const handleUpdate = (course) => {
         let date = course.date.toLowerCase();
@@ -21,15 +20,8 @@ const CourseList = ({courseList, user}) => {
             firebase.database().ref("Users/Students/" + user.id + "/schedule/" + date).update({[i]: course});
         }
         firebase.database().ref("Users/Students/" + user.id).update({credits: user.credits += course.credit});
-        firebase.database().ref("Courses/" + course.id).update({vacancy: course.vacancy -= 1});
-        removeCourse(course);
-    }
-
-    const removeCourse = (course) => {
-        const index = courses.indexOf(course);
-        if (index > -1) {
-            setCourses(courseList.splice(index, 1));
-        }
+        firebase.database().ref("Users/Students/" + user.id + "/enrolled").update({[course.id]: course.id});
+        firebase.database().ref("Courses/" + course.id).update({vacancy: course.vacancy -= 1});  
     }
     
     return (
@@ -47,7 +39,7 @@ const CourseList = ({courseList, user}) => {
                             <td>{course.classroom}</td>
                             <td>{course.vacancy}/70</td>
                             <td>{course.credit}</td>
-                            <td><button className="add-btn" onClick={() => handleUpdate(course)} >ADD</button></td>
+                            <td><button className="add-btn" onClick={() => handleUpdate(course)}>ADD</button></td>
                         </tr>
                     )	
                 }

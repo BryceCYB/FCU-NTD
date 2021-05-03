@@ -79,6 +79,8 @@ export default function YourCourses(props) {
         let emptyCourse = courseList.find(course => course.id === "0000");
 
         // Clear cell with empty class
+        console.log(courseList);
+
         let startTime = getStartTime(targetCourse.start);
         let endTime = getEndTime(targetCourse.end);
         let intStartTime = parseInt(startTime);
