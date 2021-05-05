@@ -16,7 +16,7 @@ const MenuLabel = styled.label`
   height: 4.6rem;
   width: 4.6rem;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 10;
   box-shadow: 0 1rem 3rem rgba(182, 237, 200, 0.3);
   text-align: center;
 
@@ -36,7 +36,7 @@ const NavBackground = styled.div`
   height: 6rem;
   width: 6rem;
   border-radius: 50%;
-  z-index: 600;
+  z-index: 6;
   transform: ${(props) => (props.clicked ? "scale(80)" : "scale(0)")};
   transition: transform 0.8s;
 
@@ -94,7 +94,7 @@ const Navigation = styled.nav`
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 600;
+  z-index: 6;
   width: ${(props) => (props.clicked ? "100%" : "0")};
   opacity: ${(props) => (props.clicked ? "1" : "0")};
   transition: width 0.8s, opacity 0.8s;

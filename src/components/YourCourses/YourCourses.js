@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import './YourCourses.css';
 import * as ReactBootStrap from 'react-bootstrap';
 import firebase from '../../firebase';
+import {NotificationManager} from 'react-notifications';
 
 export default function YourCourses(props) {
     const [credits, setCredits] = useState(10);
@@ -26,7 +27,7 @@ export default function YourCourses(props) {
                     let user = snapshot.child(emialSubString).val();
                     setSchedule(user.schedule);
                     setCredits(props.user.credits);
-                    setLoading(false);
+                    setLoading(false); 
                 }
             });
         } else {
@@ -35,10 +36,12 @@ export default function YourCourses(props) {
     }, [currentUser, props.user.credits]);
 
     const handleDrop = (btnId) => {
-        let targetDate = btnId.substring(0, 3);
-        let targetTime = btnId.charAt(3);
         let courseCredit;
         let courseId;
+        let targetDate = btnId.substring(0, 3);
+        let targetTime = '';
+
+        btnId.length === 5 ? targetTime = btnId.charAt(3) + btnId.charAt(4) : targetTime = btnId.charAt(3); 
         
         switch (targetDate) {
             case "mon":
@@ -70,7 +73,6 @@ export default function YourCourses(props) {
                 courseCredit = schedule.sun[targetTime].credit;
                 break;
             default:
-                // courseId = "0000";
                 courseCredit = 2;
         }
 
@@ -79,20 +81,35 @@ export default function YourCourses(props) {
         let emptyCourse = courseList.find(course => course.id === "0000");
 
         // Clear cell with empty class
-        console.log(courseList);
-
         let startTime = getStartTime(targetCourse.start);
         let endTime = getEndTime(targetCourse.end);
-        let intStartTime = parseInt(startTime);
-        let intEndTime = parseInt(endTime);
 
-        for (let i = intStartTime; i < intEndTime; i++) {
+        for (let i = startTime; i <= endTime; i++) {
             firebase.database().ref("Users/Students/" + props.user.id + "/schedule/" + targetDate).update({[i]: emptyCourse});
         }
 
         firebase.database().ref("Users/Students/" + props.user.id).update({credits: props.user.credits -= courseCredit});
+        firebase.database().ref("Users/Students/" + props.user.id + "/enrolled/" + targetCourse.id).remove();
         firebase.database().ref("Courses/" + targetCourse.id).update({vacancy: targetCourse.vacancy += 1});
+
+        createNotification('info', targetCourse.name);
     }
+
+    const createNotification = (type, name) => {
+        switch (type) {
+            case 'info':
+                return NotificationManager.info('You droped ' + name + '.');
+            case 'success':
+                return NotificationManager.success('You droped ' + name + '.', 'Success');
+            case 'warning':
+                return NotificationManager.warning('Something went wrong', 'Close', 1000);
+            case 'error':
+                return NotificationManager.error('Error!', 'Dismiss!', 5000, () => {
+                    alert('callback');
+                });
+            default:
+        }
+    };
 
     if (!currentUser) {
         return (
@@ -223,61 +240,61 @@ export default function YourCourses(props) {
 function getStartTime(startTime) {
     switch(startTime) {
             case 810:
-                return "0";
+                return 0;
             case 910:
-                return "1";
+                return 1;
             case 1010:
-                return "2";
+                return 2;
             case 1110:
-                return "3";
+                return 3;
             case 1210:
-                return "4";
+                return 4;
             case 1310:
-                return "5";
+                return 5;
             case 1410:
-                return "6";
+                return 6;
             case 1510:
-                return "7";
+                return 7;
             case 1610:
-                return "8";
+                return 8;
             case 1710:
-                return "9";
+                return 9;
             case 1830:
-                return "10";
+                return 10;
             case 1925:
-                return "11";
+                return 11;
             default:
-                return "12";
+                return 10;
         }
 }
 
 function getEndTime(endTime) {
     switch(endTime) {
             case 900:
-                return "1";
+                return 1;
             case 1000:
-                return "2";
+                return 2;
             case 1100:
-                return "3";
+                return 3;
             case 1200:
-                return "4";
+                return 4;
             case 1300:
-                return "5";
+                return 5;
             case 1400:
-                return "6";
+                return 6;
             case 1500:
-                return "7";
+                return 7;
             case 1600:
-                return "8";
+                return 8;
             case 1700:
-                return "9";
+                return 9;
             case 1800:
-                return "10";
+                return 10;
             case 1920:
-                return "11";
+                return 11;
             case 2015:
-                return "12";
+                return 12;
             default:
-                return "13";
+                return 13;
         }
 }

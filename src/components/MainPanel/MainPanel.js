@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import './MainPanel.css';
 import HamburgerMenu from '../NavMenu/HamburgerMenu';
@@ -12,14 +12,22 @@ import Term from '../Term/Term';
 import accountIcon from '../../images/account_icon.png';
 import { useAuth } from '../../contexts/AuthContext';
 import firebase from '../../firebase';
+import { TweenLite, Power3 } from 'gsap'; 
+import {NotificationContainer} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 
 const MainPanel =(() => {
     const { currentUser } = useAuth();
     const [user, setUser] = useState({});   
     const [courseList, setCourseList] = useState([]); 
     const [defaultCourseList, setDefaultCourseList] = useState([]); 
+
+    // For animations
+    let mainRef = useRef(null);
     
     useEffect(() => {
+        TweenLite.to(mainRef, 3.2, { opacity: 1, ease: Power3.easeOut, delay: .1})
+        
         if (currentUser) {
             firebase.database().ref("Users/Students")
             .orderByChild("email")
@@ -59,12 +67,13 @@ const MainPanel =(() => {
     return (
         <Router>
             <Switch>
-                <div className="main-panel">
+                <div className="main-panel" ref={ele => {mainRef = ele}}>
                     <Link className="account-btn" to="/fcu/account">
                         <img className="account-img" src={currentUser ? user.avatar :accountIcon} alt="Account" />
                         <p className="user-name">{currentUser ? user.name : "Login"}</p>
                     </Link>
                     <HamburgerMenu/>
+                    <NotificationContainer />
                     
                     <Route path="/fcu/" exact component={About} />
                     <Route

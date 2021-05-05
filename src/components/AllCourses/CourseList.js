@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AllCourses.css';
 import firebase from '../../firebase';
+import {NotificationManager} from 'react-notifications';
 
 const CourseList = ({courseList, user}) => {
     const [courses, setCourses] = useState([]);
@@ -21,8 +22,26 @@ const CourseList = ({courseList, user}) => {
         }
         firebase.database().ref("Users/Students/" + user.id).update({credits: user.credits += course.credit});
         firebase.database().ref("Users/Students/" + user.id + "/enrolled").update({[course.id]: course.id});
-        firebase.database().ref("Courses/" + course.id).update({vacancy: course.vacancy -= 1});  
+        firebase.database().ref("Courses/" + course.id).update({vacancy: course.vacancy -= 1});
+
+        createNotification('success', course.name); 
     }
+
+    const createNotification = (type, name) => {
+        switch (type) {
+            case 'info':
+                return NotificationManager.info('Info.');
+            case 'success':
+                return NotificationManager.success(name + ' is added to your schedule.', 'Success');
+            case 'warning':
+                return NotificationManager.warning('Something went wrong', 'Close', 1000);
+            case 'error':
+                return NotificationManager.error('Error!', 'Dismiss!', 5000, () => {
+                    alert('callback');
+                });
+            default:
+        }
+    };
     
     return (
         <>

@@ -5,6 +5,7 @@
     backdrop-filter: blur(0.2rem);
     overflow-x: hidden;
     overflow-y: auto;
+    opacity: 0;
 }
 
 .account-btn {
