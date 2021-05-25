@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -136,9 +136,49 @@ const ItemLink = styled(NavLink)`
   }
 `;
 
-function HamburgerMenu() {
+function HamburgerMenu({isTeacher}) {
   const [click, setClick] = useState(false);
+  const [teacherList, setTeacherList] = useState(false);
   const handleClick = () => setClick(!click);
+
+  useEffect(() => {
+    setTeacherList(isTeacher);
+  }, [isTeacher]);
+
+  const renderStudentList = () => {
+    return (
+      <>
+        <li>
+          <ItemLink onClick={handleClick} to="/fcu/allcourses">
+            Courses
+          </ItemLink>
+        </li>
+        <li>
+          <ItemLink onClick={handleClick} to="/fcu/yourcourses">
+            Schedule
+          </ItemLink>
+        </li>
+      </>
+    )
+  }
+
+  const renderTeacherList = () => {
+    return (
+      <>
+        <li>
+          <ItemLink onClick={handleClick} to="/fcu/newcourse">
+            Create new course
+          </ItemLink>
+        </li>
+        <li>
+          <ItemLink onClick={handleClick} to="/fcu/make-announcement">
+            Make Announcement
+          </ItemLink>
+        </li>
+      </>
+    )
+  }
+
   return (
     <>
       <MenuLabel htmlFor="navi-toggle" onClick={handleClick}>
@@ -152,16 +192,7 @@ function HamburgerMenu() {
               About
             </ItemLink>
           </li>
-          <li>
-            <ItemLink onClick={handleClick} to="/fcu/allcourses">
-              Courses
-            </ItemLink>
-          </li>
-          <li>
-            <ItemLink onClick={handleClick} to="/fcu/yourcourses">
-              Schedule
-            </ItemLink>
-          </li>
+          {teacherList ? renderTeacherList() : renderStudentList()} 
           <li>
             <ItemLink onClick={handleClick} to="/fcu/term">
               Terms of Service

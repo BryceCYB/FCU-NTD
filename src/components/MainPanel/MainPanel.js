@@ -8,17 +8,21 @@ import YourCourses from '../YourCourses/YourCourses';
 import Account from '../Account/Account';
 import ResetPassword from '../Account/ResetPassword';
 import EditInfo from '../Account/EditInfo';
+import NewCourse from '../NewCourse/NewCourse';
+import MakeAnnouncement from '../MakeAnnouncement/MakeAnnouncement';
 import Term from '../Term/Term';
 import accountIcon from '../../images/account_icon.png';
 import { useAuth } from '../../contexts/AuthContext';
 import firebase from '../../firebase';
-import { TweenLite, Power3 } from 'gsap'; 
+import { TweenLite, Power3, gsap } from 'gsap'; 
+import { CSSPlugin } from 'gsap/CSSPlugin'
 import {NotificationContainer} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 
 const MainPanel =(() => {
     const { currentUser } = useAuth();
-    const [user, setUser] = useState({});   
+    const [user, setUser] = useState({});  
+    const [isTeacher, setIsTeacher] = useState(); 
     const [courseList, setCourseList] = useState([]); 
     const [defaultCourseList, setDefaultCourseList] = useState([]); 
 
@@ -26,41 +30,62 @@ const MainPanel =(() => {
     let mainRef = useRef(null);
     
     useEffect(() => {
-        TweenLite.to(mainRef, 3.2, { opacity: 1, ease: Power3.easeOut, delay: .1})
+        gsap.registerPlugin(CSSPlugin);
+        TweenLite.to(mainRef, 3.2, { opacity: 1, ease: Power3.easeOut, delay: .1});
         
         if (currentUser) {
-            firebase.database().ref("Users/Students")
-            .orderByChild("email")
-            .equalTo(currentUser.email)
-            .once("value", snapshot => {
-                if (!snapshot.exists()) {
-                    console.log("No users found");
-                } else {
-                    let emialSubString = currentUser.email.substring(0, 8);
-                    let user = snapshot.child(emialSubString).val();
-                    setUser(user);
+            if (currentUser.email.charAt(0) === 't') {
+                setIsTeacher(true);
 
-                    const coursesRef = firebase.database().ref("Courses");
-                    coursesRef.on("value", (snapshot) => {
-                        const courses = snapshot.val();
-                        const list = [];
-                        const defaultList = [];
-                        const enrolledRef = firebase.database().ref("Users/Students/" + user.id + "/enrolled");
+                firebase.database().ref("Users/Teachers")
+                .orderByChild("email")
+                .equalTo(currentUser.email)
+                .once("value", snapshot => {
+                    if (!snapshot.exists()) {
+                        console.log("No users found");
+                    } else {
+                        let emialSubString = currentUser.email.substring(0, 8);
+                        let user = snapshot.child(emialSubString).val();
+                        setUser(user);
+                    }
+                });
 
-                        enrolledRef.on("value", (snapshot) => {
-                            const enrolledList = snapshot.val();
-                            for (let id in courses) {
-                                if (enrolledList[id] !== id) {
-                                    list.push(courses[id]);
+            } else {
+                setIsTeacher(false);
+
+                firebase.database().ref("Users/Students")
+                .orderByChild("email")
+                .equalTo(currentUser.email)
+                .once("value", snapshot => {
+                    if (!snapshot.exists()) {
+                        console.log("No users found");
+                    } else {
+                        let emialSubString = currentUser.email.substring(0, 8);
+                        let user = snapshot.child(emialSubString).val();
+                        setUser(user);
+
+                        const coursesRef = firebase.database().ref("Courses");
+                        coursesRef.on("value", (snapshot) => {
+                            const courses = snapshot.val();
+                            const list = [];
+                            const defaultList = [];
+                            const enrolledRef = firebase.database().ref("Users/Students/" + user.id + "/enrolled");
+
+                            enrolledRef.on("value", (snapshot) => {
+                                const enrolledList = snapshot.val();
+                                for (let id in courses) {
+                                    if (enrolledList[id] !== id) {
+                                        list.push(courses[id]);
+                                    }
+                                    defaultList.push(courses[id]);
                                 }
-                                defaultList.push(courses[id]);
-                            }
-                            setCourseList(list); 
-                            setDefaultCourseList(defaultList);
+                                setCourseList(list); 
+                                setDefaultCourseList(defaultList);
+                            })
                         })
-                    })
-                }
-            });
+                    }
+                });
+            }
         }
     }, [currentUser]);
 
@@ -72,7 +97,7 @@ const MainPanel =(() => {
                         <img className="account-img" src={currentUser ? user.avatar :accountIcon} alt="Account" />
                         <p className="user-name">{currentUser ? user.name : "Login"}</p>
                     </Link>
-                    <HamburgerMenu/>
+                    <HamburgerMenu isTeacher={isTeacher}/>
                     <NotificationContainer />
                     
                     <Route path="/fcu/" exact component={About} />
@@ -86,7 +111,15 @@ const MainPanel =(() => {
                     />
                     <Route
                         path="/fcu/account"
-                        render={(props) => (<Account {...props} user={user} />)}
+                        render={(props) => (<Account {...props} user={user} isTeacher={isTeacher} />)}
+                    />
+                    <Route
+                        path="/fcu/newcourse"
+                        render={(props) => (<NewCourse {...props} user={user} />)}
+                    />
+                    <Route
+                        path="/fcu/make-announcement"
+                        render={(props) => (<MakeAnnouncement {...props} user={user} />)}
                     />
                     <Route
                         path="/fcu/edit-info"

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://bryceism.com/fcu/",
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
     "@react-firebase/auth": "^0.2.10",
     "@react-firebase/database": "^0.3.11",
     "@testing-library/jest-dom": "^5.11.4",

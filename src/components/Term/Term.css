@@ -6,3 +6,19 @@
     font-size: 13px;
     opacity: 0.8;
 }
+
+.kr {
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   overflow: hidden;
+   border-radius: 10px;
+}
+
+.kr-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

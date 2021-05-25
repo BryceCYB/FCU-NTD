@@ -12,7 +12,9 @@ export default function Account(props) {
     
     useEffect(() => {
         if (currentUser) {
-            firebase.database().ref("Users/Students")
+            let path = props.isTeacher ? 'Teachers' : 'Students';
+
+            firebase.database().ref("Users/" + path)
             .orderByChild("email")
             .equalTo(currentUser.email)
             .once("value", snapshot => {
@@ -25,7 +27,7 @@ export default function Account(props) {
                 }
             });
         }
-    }, [currentUser]);
+    }, [currentUser, props.isTeacher]);
 
     if (isLoggedIn) {
         return <Info user={user}/>
