@@ -166,6 +166,11 @@ function HamburgerMenu({isTeacher}) {
     return (
       <>
         <li>
+          <ItemLink onClick={handleClick} to="/fcu/allcourses">
+            Courses
+          </ItemLink>
+        </li>
+        <li>
           <ItemLink onClick={handleClick} to="/fcu/newcourse">
             Create new course
           </ItemLink>

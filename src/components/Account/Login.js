@@ -19,8 +19,7 @@ export default function Login() {
             setError("");
             setLoading(true);
             await login(emailRef.current.value, passwordRef.current.value);
-            // window.location.reload();
-            history.push("/fcu/allcourses");
+            history.push("/fcu/");
         } catch {
             setError("⚠ Failed to login!");
         }

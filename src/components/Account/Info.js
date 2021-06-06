@@ -19,7 +19,6 @@ export default function Info(props) {
 
         try {
             await logout();
-            // window.location.reload();
             history.push("/fcu/");
         } catch {
             setError("Failed to logout!");
@@ -32,14 +31,14 @@ export default function Info(props) {
 
     return (
         <div className="info-panel">
-            <h2 className="info-title">Student Info</h2>
+            <h2 className="info-title">{props.isTeacher ? 'Teacher Info' : 'Student Info'}</h2>
             {error && <Alert className="error-msg">{error}</Alert>}
             <div className="details">
                 <div className="avatar-container">
                     <img className="avatar" src={user.avatar} alt=" "/>
                 </div>
                 <h5 className="info-row">Name: {user.name}</h5>
-                <h5 className="info-row">Student Id: {user.id}</h5>
+                <h5 className="info-row">{props.isTeacher ? 'Staff Id' : 'Student Info'}: {user.id}</h5>
                 <h5 className="info-row">Age: {user.age}</h5>
                 <h5 className="info-row">Department: {user.department}</h5>
                 <h5 className="info-row">Email: {user.email}</h5>

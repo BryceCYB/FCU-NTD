@@ -30,7 +30,7 @@ export default function Account(props) {
     }, [currentUser, props.isTeacher]);
 
     if (isLoggedIn) {
-        return <Info user={user}/>
+        return <Info user={user} isTeacher={props.isTeacher}/>
     } else {
         return <Login />
     }

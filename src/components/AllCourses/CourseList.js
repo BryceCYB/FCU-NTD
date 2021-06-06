@@ -3,7 +3,7 @@ import './AllCourses.css';
 import firebase from '../../firebase';
 import {NotificationManager} from 'react-notifications';
 
-const CourseList = ({courseList, user}) => {
+const CourseList = ({courseList, user, isTeacher}) => {
     const [courses, setCourses] = useState([]);
 
     useEffect(() => {
@@ -58,7 +58,7 @@ const CourseList = ({courseList, user}) => {
                             <td>{course.classroom}</td>
                             <td>{course.vacancy}/70</td>
                             <td>{course.credit}</td>
-                            <td><button className="add-btn" onClick={() => handleUpdate(course)}>ADD</button></td>
+                            {isTeacher ? <></> : <td><button className="add-btn" onClick={() => handleUpdate(course)}>ADD</button></td>}
                         </tr>
                     )	
                 }

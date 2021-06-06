@@ -8,6 +8,7 @@
     min-height: 365px;
     border-radius: 1rem;
     background: rgba(0, 0, 0, 0.158);
+    /* backdrop-filter: blur(0.15rem); */
 }
 
 .reset-panel {
@@ -20,6 +21,7 @@
     border-radius: 1rem;
     background: rgba(0, 0, 0, 0.158);
     transform: translate(-50%, -50%);
+    /* backdrop-filter: blur(0.15rem); */
 }
 
 .edit-panel {
@@ -33,6 +35,7 @@
     background: rgba(0, 0, 0, 0.158);
     transform: translate(-50%, -50%);
     padding: 30px;
+    backdrop-filter: blur(0.15rem);
 }
 
 .info-panel {
@@ -49,6 +52,7 @@
     align-items: center;
     border-radius: 1rem;
     background: rgba(0, 0, 0, 0.158);
+    backdrop-filter: blur(0.15rem);
 }
 
 .avatar-container {
@@ -63,6 +67,18 @@
     height: 200px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.avatar:hover {
+    width: 280px;
+    height: 280px;
+    background: #ffffffd0;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ffffffd0,
+    0 0 15px #ffffffd0,
+    0 0 25px #ffffffd0,
+    0 0 30px #ffffffd0;
 }
 
 .card {

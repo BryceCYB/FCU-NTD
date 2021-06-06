@@ -23,17 +23,17 @@ export default function EditInfo(props) {
 
     async function handleUpdate(e) {
         try {
-            firebase.database().ref("Users/Students/" + props.user.id).update({name: userName});
-            firebase.database().ref("Users/Students/" + props.user.id).update({age: userAge});
-            firebase.database().ref("Users/Students/" + props.user.id).update({mobile: userMobile});
-            firebase.database().ref("Users/Students/" + props.user.id).update({address: userAddress});
-            firebase.database().ref("Users/Students/" + props.user.id).update({bio: userBio});
+            let userType = props.isTeacher ? "Users/Teachers/" : "Users/Students/";
+
+            firebase.database().ref(userType + props.user.id).update({name: userName});
+            firebase.database().ref(userType + props.user.id).update({age: userAge});
+            firebase.database().ref(userType + props.user.id).update({mobile: userMobile});
+            firebase.database().ref(userType + props.user.id).update({address: userAddress});
+            firebase.database().ref(userType + props.user.id).update({bio: userBio});
             if (userAvatar) {
                 e.preventDefault();
                 handleUpload();
             } 
-            history.push("/fcu/account");
-
         } catch {
             console.log("⚠ Failed to update!");
         }
@@ -48,14 +48,14 @@ export default function EditInfo(props) {
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(userAvatar.name);
 
-        console.log(storageRef)
-        console.log(fileRef)
-
         fileRef.put(userAvatar).then(() => {
             fileRef.getDownloadURL().then((url) => {
                 console.log(url);
                 firebase.database().ref("Users/Students/" + props.user.id).update({avatar: url});
             })
+        }).then(() => {
+            props.onInfoChange();
+            history.push("/fcu/");
         })
     }
 

@@ -27,7 +27,7 @@ export default function NewCourse() {
     const [classroom, setClassroom] = useState(' ');
 
     async function handleUpdate(e) {
-        let newCourse = new Course(courseName, courseId, date, startTime, endTime, credit, classroom, "Test", 75);
+        let newCourse = new Course(courseName, courseId, date, startTime, endTime, credit, classroom, "Test", 70);
 
         try {
             firebase.database().ref("Courses/").update({[courseId]: newCourse});

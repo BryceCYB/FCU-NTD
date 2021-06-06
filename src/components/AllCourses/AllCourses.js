@@ -56,7 +56,7 @@ export default function AllCourses(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    <CourseList courseList={courseList} user={user}/>
+                    <CourseList courseList={courseList} user={user} isTeacher={props.isTeacher}/>
                 </tbody>
             </ReactBootStrap.Table>
             {error && <ReactBootStrap.Alert className="error-msg">{error}</ReactBootStrap.Alert>}

@@ -37,6 +37,7 @@ export default function MakeAnnouncement(props) {
             let newAnnouncement = new Announcement(today, message, author);
             announcementRef.update({[count]: newAnnouncement});
             createNotification('success', ' ');
+            setMessage("");
             e.preventDefault();
         } catch {
             console.log("⚠ Failed to update!");

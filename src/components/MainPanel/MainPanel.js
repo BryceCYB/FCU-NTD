@@ -32,6 +32,8 @@ const MainPanel =(() => {
     useEffect(() => {
         gsap.registerPlugin(CSSPlugin);
         TweenLite.to(mainRef, 3.2, { opacity: 1, ease: Power3.easeOut, delay: .1});
+
+        const coursesRef = firebase.database().ref("Courses");
         
         if (currentUser) {
             if (currentUser.email.charAt(0) === 't') {
@@ -47,9 +49,19 @@ const MainPanel =(() => {
                         let emialSubString = currentUser.email.substring(0, 8);
                         let user = snapshot.child(emialSubString).val();
                         setUser(user);
+
+                        coursesRef.on("value", (snapshot) => {
+                            const courses = snapshot.val();
+                            const list = [];
+
+                            for (let id in courses) {
+                                list.push(courses[id]);
+                            }
+                            setCourseList(list); 
+                            setDefaultCourseList(list);
+                        })
                     }
                 });
-
             } else {
                 setIsTeacher(false);
 
@@ -64,7 +76,7 @@ const MainPanel =(() => {
                         let user = snapshot.child(emialSubString).val();
                         setUser(user);
 
-                        const coursesRef = firebase.database().ref("Courses");
+                        // const coursesRef = firebase.database().ref("Courses");
                         coursesRef.on("value", (snapshot) => {
                             const courses = snapshot.val();
                             const list = [];
@@ -82,12 +94,21 @@ const MainPanel =(() => {
                                 setCourseList(list); 
                                 setDefaultCourseList(defaultList);
                             })
-                        })
+                        })    
                     }
                 });
             }
         }
     }, [currentUser]);
+
+    const onInfoChange = () => {
+        const studentRef = firebase.database().ref("Users/Students/" + user.id);
+        studentRef.on('value', (snapshot) => {
+            setUser(snapshot.val());
+        }, (errorObject) => {
+            console.log('The read failed: ' + errorObject.name);
+        }); 
+    }   
 
     return (
         <Router>
@@ -103,7 +124,7 @@ const MainPanel =(() => {
                     <Route path="/fcu/" exact component={About} />
                     <Route
                         path="/fcu/allcourses"
-                        render={(props) => (<AllCourses {...props} user={user} courses={courseList} />)}
+                        render={(props) => (<AllCourses {...props} user={user} courses={courseList} isTeacher={isTeacher} />)}
                     />
                     <Route
                         path="/fcu/yourcourses"
@@ -123,11 +144,12 @@ const MainPanel =(() => {
                     />
                     <Route
                         path="/fcu/edit-info"
-                        render={(props) => (<EditInfo {...props} user={user} />)}
+                        render={(props) => (<EditInfo {...props} user={user} isTeacher={isTeacher} onInfoChange={onInfoChange}/>)}
                     />
                     <Route path="/fcu/term" component={Term} />
                     <Route path="/fcu/reset-password" component={ResetPassword} />
                 </div>
+                
             </Switch>
         </Router>
     );

@@ -13,7 +13,7 @@
 
 .background {
   /* Gradient animation */
-  background: linear-gradient(250deg, #246655, #516d91, #94aed1);
+  background: linear-gradient(250deg, #0d7257, #ffdd94, #0314af);
   background-size: 600% 600%;
 
   -webkit-animation: AnimationName 60s ease infinite;
@@ -47,5 +47,11 @@ button:hover {
     0%{background-position:0% 50%}
     50%{background-position:100% 50%}
     100%{background-position:0% 50%}
+}
+
+.svg-footer {
+  position: absolute;
+  bottom: 0;
+  z-index: 0.5;
 }
 

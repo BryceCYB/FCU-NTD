@@ -2,7 +2,6 @@
     background-image: linear-gradient(to top, #4e4e4e33 0%, #9b9b9b8a 100%);
     margin: 0;
     height: 100vh;
-    backdrop-filter: blur(0.2rem);
     overflow-x: hidden;
     overflow-y: auto;
     opacity: 0;
